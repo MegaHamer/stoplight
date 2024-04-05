@@ -25,20 +25,55 @@ class MainActivity : AppCompatActivity() {
 
         binding.ChangeColorBtn.setOnClickListener {changeColor()}
 
+        //set i if save
+        i = savedInstanceState?.getInt("i") ?: 0
+        //set down
+        down = savedInstanceState?.getBoolean("down") ?: true
+        //set color
+        drawCircleColor()
     }
-    private var i = 3;
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        //save i
+        outState.putInt("i",i)
+        //save down
+        outState.putBoolean("down",down)
+    }
+    private var i = 0;
+    private var down = true;
     private fun changeColor(){
-        var light:GradientDrawable;
-        light = setLightByI()
+        drawCircleGray()
 
-        light.setColor(Color.GRAY);
+        if(down){
+            i++
+        }
+        else{
+            i--
+        }
 
-        i = ++i % 4
-        light = setLightByI()
+        if(i >= 3){
+            down = false
+        }
+        if(i<=1){
+            down = true
+        }
 
-        light.setColor( when(i){
-            0-> Color.RED;
-            1,3->Color.YELLOW;
+        drawCircleColor()
+    }
+    private fun drawCircleGray(){
+        if (i == 0) return;
+        var CurrentCircle:GradientDrawable;
+        CurrentCircle = setLightByI()
+        CurrentCircle.setColor(Color.GRAY);
+    }
+    private fun drawCircleColor(){
+        if (i == 0) return;
+        var CurrentCircle:GradientDrawable;
+        CurrentCircle = setLightByI()
+        CurrentCircle.setColor( when(i){
+            1-> Color.RED;
+            2->Color.YELLOW;
             else -> Color.GREEN;
         })
     }
@@ -46,8 +81,8 @@ class MainActivity : AppCompatActivity() {
     private fun setLightByI(): GradientDrawable {
         var light1:GradientDrawable
         light1 = when (i) {
-            0 -> binding.topLight.background.mutate() as GradientDrawable;
-            1, 3 -> binding.middleLight.background.mutate() as GradientDrawable;
+            1 -> binding.topLight.background.mutate() as GradientDrawable;
+            2 -> binding.middleLight.background.mutate() as GradientDrawable;
             else -> binding.bottomLight.background.mutate() as GradientDrawable;
         }
         return light1
